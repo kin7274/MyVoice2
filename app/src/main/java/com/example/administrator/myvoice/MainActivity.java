@@ -12,11 +12,14 @@ import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,10 +44,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         // 객체 생성
         setView();
+
+
+
+
+
     }
 
     // 객체 생성
-    public void setView(){
+    public void setView() {
         textView = (TextView) findViewById(R.id.textView);
         btn1 = (Button) findViewById(R.id.btn1);
         btn2 = (Button) findViewById(R.id.btn2);
@@ -101,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onResults(Bundle results) {
                     final ArrayList<String> result = (ArrayList<String>) results.get(SpeechRecognizer.RESULTS_RECOGNITION);
-                    txt.append("[나] "+result.get(0)+"\n");
+                    txt.append("[나] " + result.get(0) + "\n");
                     // 1초 딜레이
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -130,21 +138,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     // 답에 대한 메서드
-    private void replyAnswer(String input, TextView txt){
-        try{
-            if(input.contains("안녕")){
+    private void replyAnswer(String input, TextView txt) {
+        try {
+            if (input.contains("안녕")) {
                 txt.append("[니들요정] 누구세요?\n");
                 tts.speak("누구세요?", TextToSpeech.QUEUE_FLUSH, null);
-            }
-            else if(input.contains("응")){
+            } else if (input.contains("응")) {
                 txt.append("[니들요정] 오 대박?\n");
                 tts.speak("오 대박", TextToSpeech.QUEUE_FLUSH, null);
-            }
-            else if(input.contains("아니오")){
+            } else if (input.contains("아니오")) {
                 txt.append("[니들요정] 아니오.. 유감..\n");
                 tts.speak("아니오.. 유감..", TextToSpeech.QUEUE_FLUSH, null);
-            }
-            else if(input.equals("꺼져")){
+            } else if (input.equals("꺼져")) {
                 tts.speak("응수고", TextToSpeech.QUEUE_FLUSH, null);
                 // 1초 뒤에 꺼진다
                 new Handler().postDelayed(new Runnable() {
@@ -153,8 +158,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         finish();
                     }
                 }, 1000);
-            }
-            else {
+            } else {
                 txt.append("[니들요정]" + input + "?? 뭐라는거야?\n");
                 tts.speak(input, TextToSpeech.QUEUE_FLUSH, null);
 //                txt.append("[니들요정] 뭐라는거야?\n");
@@ -166,14 +170,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     // 토스트용
-    private void toast(String msg){
+    private void toast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     // 버튼 클릭 이벤트
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn1:
                 // 음성인식 시작
                 inputVoice(textView);
@@ -189,13 +193,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
                 // 인슐린 종합 데이터
                 String result = data.getStringExtra("AA");
-                Toast.makeText(getApplicationContext(), "result = "+ result, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "result = " + result, Toast.LENGTH_SHORT).show();
                 replyAnswer(result, textView);
             }
         }
